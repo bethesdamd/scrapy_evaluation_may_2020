@@ -1,0 +1,4 @@
+venv/
+__pycache__
+postscrape/posts-1.html
+postscrape/posts-2.html
