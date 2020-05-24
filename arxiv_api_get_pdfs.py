@@ -31,12 +31,12 @@ def get_pdf_urls_from_root(root):
 # Main
 if __name__ == "__main__":
     print(f"Making API call to {url} ...")
-    root = ET.fromstring(requests.get(url).text)
+    root = ET.fromstring(requests.get(url).text)  # This is the first request to get just a list of documents
     dct = dict()
     with open('all.json', 'w', encoding='utf8') as fout:
         for idx, url in enumerate(get_pdf_urls_from_root(root)):
             print(url)
-            text = pdf.get_remote_pdf_text(url).strip()
+            text = pdf.get_remote_pdf_text(url).strip()  # This is actually GET'ing a PDF and its text
             sentences, words = prep.clean(text)
             dct['timestamp'] = str(datetime.now())
             dct['url'] = url
@@ -48,8 +48,3 @@ if __name__ == "__main__":
             json.dump(dct, fout, ensure_ascii=False)
             fout.write("\n")  
             
-
-
-
-
-        
