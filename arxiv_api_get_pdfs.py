@@ -19,20 +19,22 @@ url = f'http://export.arxiv.org/api/query?search_query=all:{SUBJECT}&start=0&max
 
 # Accepts an XML ElementTree (I think) and searches for all the pdf's, returning
 # a list of URL's to each PDF
-def get_pdf_urls_from_tree(tree):
+def get_pdf_urls_from_root(root):
     out = []
-    for link_el in tree.findall("ns:entry/ns:link", namespace):
-        if link_el.attrib.get('title') == 'pdf':
-            out.append(link_el.attrib.get('href'))
+    entries = root.findall('ns:entry', namespace)
+    for entry in entries:
+        link = entry.find("ns:link/[@title='pdf']", namespace)
+        if link is not None:
+            out.append(link.attrib.get('href'))
     return out
 
 # Main
 if __name__ == "__main__":
     print(f"Making API call to {url} ...")
-    tree = ET.fromstring(requests.get(url).text)
+    root = ET.fromstring(requests.get(url).text)
     dct = dict()
     with open('all.json', 'w', encoding='utf8') as fout:
-        for idx, url in enumerate(get_pdf_urls_from_tree(tree)):
+        for idx, url in enumerate(get_pdf_urls_from_root(root)):
             print(url)
             text = pdf.get_remote_pdf_text(url).strip()
             sentences, words = prep.clean(text)
