@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import re
 import json
 import requests
+from datetime import datetime
 
 # My modules
 import pdf_parse as pdf
@@ -35,6 +36,7 @@ if __name__ == "__main__":
             print(url)
             text = pdf.get_remote_pdf_text(url).strip()
             sentences, words = prep.clean(text)
+            dct['timestamp'] = str(datetime.now())
             dct['url'] = url
             dct['text'] = text
             # print(json.dumps(dct))        
