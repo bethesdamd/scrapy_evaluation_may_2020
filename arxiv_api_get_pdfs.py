@@ -27,6 +27,7 @@ def get_pdf_urls_from_root(root):
         link = entry.find("ns:link/[@title='pdf']", namespace)
         if link is not None:
             d['url'] = link.attrib.get('href')
+            d['scraped_timestamp'] = str(datetime.now())
             d['title'] = entry.find("ns:title", namespace).text
             d['published'] = entry.find("ns:published", namespace).text
             out.append(d)
@@ -42,16 +43,10 @@ if __name__ == "__main__":
             url = info_dict['url']
             text = pdf.get_remote_pdf_text(url).strip()  # This is actually GET'ing a PDF and its text
             sentences, words = prep.clean(text)
-            dct['timestamp'] = str(datetime.now())
-            dct['title'] = info_dict['title']
-            dct['published'] = info_dict['published']
-            dct['url'] = url
-            dct['text'] = text
-            
-            # print(json.dumps(dct))        
+            info_dict['text'] = text 
             # Write out a single file in "JSON Lines" format (every line is a json object)
             # which is suitable for BigQuery upload manually from a google storage bucket,
             # which is good for testing
-            json.dump(dct, fout, ensure_ascii=False)
+            json.dump(info_dict, fout, ensure_ascii=False)
             fout.write("\n")  
             
