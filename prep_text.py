@@ -12,11 +12,13 @@ def is_not_number(str):
 
 
 def clean(str):
-    text_no_sw = remove_stopwords(str)  # no stop words
-    sentences = sent_tokenize(text_no_sw)
-    tokens = word_tokenize(text_no_sw)
+    text = str.replace("\n", "")
+    text = remove_stopwords(text)  # no stop words
+    text = re.sub(r'\s{0,6}\d\s', '', text)  # removes stray numbers like '44' TODO needs improvement
+    sentences = sent_tokenize(text)  
+    tokens = word_tokenize(text)
     porter = PorterStemmer()
     stemmed = [porter.stem(word) for word in tokens]
     words = list(filter(is_not_number, stemmed))
-    return sentences, set(words)  # use set() to remove duplicate words
+    return text, sentences, set(words)  # use set() to remove duplicate words
 
